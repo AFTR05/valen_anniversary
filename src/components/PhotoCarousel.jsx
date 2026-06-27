@@ -1,3 +1,5 @@
+import { useState, useRef, useCallback } from 'react'
+
 const RAW_PHOTOS = [
   'IMG-20240819-WA0014.jpg',
   'IMG-20250921-WA0007.jpg',
@@ -15,12 +17,23 @@ const PHOTOS = RAW_PHOTOS.map(f => `/photos/${encodeURIComponent(f)}`)
 
 function Strip({ photos, reverse, speed }) {
   const doubled = [...photos, ...photos]
+  const [ready, setReady] = useState(false)
+  const loadedCount = useRef(0)
+
+  const onImageSettle = useCallback(() => {
+    loadedCount.current += 1
+    if (loadedCount.current >= Math.ceil(doubled.length / 2)) {
+      setReady(true)
+    }
+  }, [doubled.length])
+
   return (
     <div
       style={{
         overflow: 'hidden',
         WebkitMaskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
         maskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
+        minHeight: 260,
       }}
     >
       <div
@@ -28,7 +41,12 @@ function Strip({ photos, reverse, speed }) {
           display: 'flex',
           gap: '14px',
           width: 'max-content',
-          animation: `${reverse ? 'marquee-reverse' : 'marquee'} ${speed}s linear infinite`,
+          willChange: 'transform',
+          animation: ready
+            ? `${reverse ? 'marquee-reverse' : 'marquee'} ${speed}s linear infinite`
+            : 'none',
+          opacity: ready ? 1 : 0,
+          transition: 'opacity 0.6s ease',
         }}
         onMouseEnter={e => (e.currentTarget.style.animationPlayState = 'paused')}
         onMouseLeave={e => (e.currentTarget.style.animationPlayState = 'running')}
@@ -43,13 +61,18 @@ function Strip({ photos, reverse, speed }) {
               flexShrink: 0,
               border: '1px solid rgba(198,164,106,0.22)',
               boxShadow: '0 8px 32px rgba(36,18,30,0.45)',
+              background: 'rgba(36,18,30,0.4)',
             }}
           >
             <img
               src={src}
               alt=""
-              style={{ height: '100%', width: 'auto', display: 'block' }}
+              loading="eager"
+              decoding="async"
               draggable={false}
+              onLoad={onImageSettle}
+              onError={onImageSettle}
+              style={{ height: '100%', width: 'auto', display: 'block' }}
             />
           </div>
         ))}
@@ -63,7 +86,6 @@ export default function PhotoCarousel() {
 
   return (
     <section className="py-16">
-      {/* Title */}
       <div className="text-center mb-10 px-5">
         <p
           className="font-sans text-xs font-bold tracking-[0.3em] uppercase mb-3"
@@ -84,15 +106,10 @@ export default function PhotoCarousel() {
         </div>
       </div>
 
-      {/* Row 1 — izquierda → derecha */}
       <Strip photos={PHOTOS} reverse={false} speed={55} />
-
       <div style={{ height: 14 }} />
-
-      {/* Row 2 — derecha → izquierda */}
       <Strip photos={reversed} reverse={true} speed={65} />
 
-      {/* Caption */}
       <p
         className="text-center mt-9 font-italic italic px-5"
         style={{ fontSize: '1rem', color: 'rgba(198,164,106,0.6)', fontStyle: 'italic' }}
