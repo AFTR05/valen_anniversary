@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3D1830"/>
+      <stop offset="100%" stop-color="#1E0E1A"/>
+    </linearGradient>
+    <linearGradient id="heart" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D4B896"/>
+      <stop offset="100%" stop-color="#B8925A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+
+  <!-- Subtle gold border -->
+  <rect width="32" height="32" rx="7" fill="none" stroke="#C6A46A" stroke-width="0.8" opacity="0.5"/>
+
+  <!-- Heart -->
+  <path
+    d="M16 24
+       C15.6 23.6 5 16.8 5 10.8
+       C5 7.6 7.5 5 10.7 5
+       C12.8 5 14.6 6.1 16 8
+       C17.4 6.1 19.2 5 21.3 5
+       C24.5 5 27 7.6 27 10.8
+       C27 16.8 16.4 23.6 16 24Z"
+    fill="url(#heart)"
+  />
+
+  <!-- Sparkle top right of heart -->
+  <circle cx="23" cy="8.5" r="0.9" fill="#D4B896" opacity="0.8"/>
+  <circle cx="25" cy="10.5" r="0.5" fill="#D4B896" opacity="0.5"/>
+</svg>
